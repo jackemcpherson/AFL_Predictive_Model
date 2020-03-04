@@ -2,12 +2,17 @@ import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
 
 utils = importr("utils")
-install = utils.install_packages
+utils.chooseCRANmirror(graphics=False, ind=1)
 
-install("fitzRoy")
-fitzroy = importr("fitzRoy")
+def InstallFitzRoy():
+    install = utils.install_packages
+    install("fitzRoy")
+    fitzroy = importr("fitzRoy")
+    return fitzroy
 
-matches = robjects.r.seq(9514, 9927)
-player_stats = fitzroy.get_footywire_stats(ids=matches)
+fitzroy = InstallFitzRoy()
 
-utils.write_csv(player_stats, "Data_Files/player_stats_2018_2019.csv")
+def RunStats(ids_start, ids_end):
+    matches = robjects.r.seq(ids_start, ids_end)
+    player_stats = fitzroy.get_footywire_stats(ids=matches)
+    utils.write_csv(player_stats, "Data_Files/player_stats.csv")
